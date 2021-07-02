@@ -42,6 +42,18 @@ def get_transforms(norm_mean,norm_std):
     print(norm_mean,norm_std)
     train_transform = A.Compose(
         [
+        A.Sequential([
+            A.PadIfNeeded(
+                min_height=40,
+                min_width=40,
+                border_mode=cv.BORDER_CONSTANT,
+                value=norm_mean
+            ),
+            A.RandomCrop(
+                height=32,
+                width=32
+            )
+        ], p=1)
         A.Cutout (num_holes=1, max_h_size=16, max_w_size=16, fill_value=norm_mean, p=1)
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
