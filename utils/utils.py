@@ -42,11 +42,7 @@ def get_transforms(norm_mean,norm_std):
     print(norm_mean,norm_std)
     train_transform = A.Compose(
         [
-        A.HorizontalFlip(p=0.2),
-        A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05, rotate_limit=15, p=0.25),
-        A.CoarseDropout(max_holes=1, max_height=16, max_width=16, min_holes=1, min_height=16, min_width=16, fill_value=(norm_mean[0]*255.0,norm_mean[1]*255.0,norm_mean[2]*255.0)),
-        A.ColorJitter(p=0.25,brightness=0.3, contrast=0.3, saturation=0.30, hue=0.2),
-        A.ToGray(p=0.15),
+        A.Cutout (num_holes=1, max_h_size=16, max_w_size=16, fill_value=norm_mean, p=1)
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
