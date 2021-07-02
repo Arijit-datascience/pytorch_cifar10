@@ -47,7 +47,7 @@ def get_transforms(norm_mean,norm_std):
             A.PadIfNeeded(
                 min_height=40,
                 min_width=40,
-                border_mode=cv.BORDER_CONSTANT,
+                border_mode=cv2.BORDER_CONSTANT,
                 value=norm_mean
             ),
             A.RandomCrop(
