@@ -175,3 +175,11 @@ def misclassification(predictions, targets, data):
         p.imshow(img[bad_index].reshape(3,32,32))
         p.axis('off')
         p.set_title(f'Pred:{pred[bad_index]}, Actual:{target[bad_index]}')
+
+def seed_everything(seed):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = True
