@@ -59,3 +59,24 @@ def test(model, device, test_loader):
     test_acc = 100.*correct/len(test_loader.dataset)
     print(f'\nTest set: Average loss: {test_loss:.3f}, Accuracy: {100. * correct/len(test_loader.dataset):.2f}')
     return test_loss, test_acc, test_pred, target_pred, target_data
+
+def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, l1_factor):
+  train_loss_values = []
+  test_loss_values = []
+  train_acc_values = []
+  test_acc_values = []
+
+  for epoch in range(1, EPOCH + 1):
+      print('\nEpoch {} : '.format(epoch))
+      # train the model
+      train_loss, train_acc = train.train(model, device, train_loader, optimizer, scheduler, epoch, l1_factor)
+      test_loss, test_acc, test_pred, target_pred, target_data = test.test(model, device, test_loader)
+
+      train_loss_values.append(train_loss)
+      test_loss_values.append(test_loss)
+
+      train_acc_values.append(train_acc)
+      test_acc_values.append(test_acc)
+
+  return train_loss_values, test_loss_values, train_acc_values, test_acc_values, test_pred, target_pred, target_data
+  
