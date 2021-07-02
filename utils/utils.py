@@ -48,14 +48,14 @@ def get_transforms(norm_mean,norm_std):
                 min_height=40,
                 min_width=40,
                 border_mode=cv2.BORDER_CONSTANT,
-                value=norm_mean
+                value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255)
             ),
             A.RandomCrop(
                 height=32,
                 width=32
             )
         ], p=1),
-        A.Cutout(num_holes=1, max_h_size=16, max_w_size=16, fill_value=norm_mean, p=1),
+        A.Cutout(num_holes=1, max_h_size=16, max_w_size=16, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
