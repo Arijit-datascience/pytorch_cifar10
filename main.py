@@ -12,15 +12,14 @@ def train(model, device, train_loader, optimizer, epoch, l1_factor):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
         output = model(data)
-        loss = F.CrossEntropyLoss()(output, target)
-
+        loss = nn.CrossEntropyLoss()(output, target)
+        
+        reg_loss = 0 
         if l1_factor > 0:
-          L1_loss = nn.L1Loss(size_average=None, reduce=None, reduction='mean')
-          reg_loss = 0 
-          for param in model.parameters():
-            zero_vector = torch.rand_like(param) * 0
-            reg_loss += L1_loss(param,zero_vector)
-          loss += l1_factor * reg_loss
+            for p in model.parameter():
+                reg_loss = reg_loss + p.abs().sum()
+
+        loss += l1_factor * reg_loss
 
         epoch_loss += loss.item()
         loss.backward()
@@ -46,7 +45,7 @@ def test(model, device, test_loader):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += F.CrossEntropyLoss()(output, target).item()  # sum up batch loss
+            test_loss += nn.CrossEntropyLoss()(output, target).item()  # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             pred_cpu = output.cpu().data.max(dim=1, keepdim=True)[1]
             correct += pred.eq(target.view_as(pred)).sum().item()
