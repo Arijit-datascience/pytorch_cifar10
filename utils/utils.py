@@ -41,32 +41,16 @@ def cifar10_mean_std():
 def get_transforms(norm_mean,norm_std):
     """get the train and test transform"""
     print(norm_mean,norm_std)
-    train_transform = A.Compose(
-        [
-        A.Sequential([
-            A.PadIfNeeded(
-                min_height=40,
-                min_width=40,
-                border_mode=cv2.BORDER_CONSTANT,
-                value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255)
-            ),
-            A.RandomCrop(
-                height=32,
-                width=32
-            )
-        ], p=1),
-        A.Cutout(num_holes=1, max_h_size=16, max_w_size=16, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
-        A.Normalize(norm_mean, norm_std),
-        ToTensorV2()
-    ]
-    )
+    train_transforms = A.Compose([A.PadIfNeeded(min_height=40, min_width=40, always_apply=True),
+                                  A.RandomCrop(width=32, height=32,p=1),
+                                  A.Rotate(limit=5),
+                                  A.CoarseDropout(max_holes=1,min_holes = 1, max_height=16, max_width=16, p=0.5,fill_value=tuple([x * 255.0 for x in mean]),
+                                  min_height=16, min_width=16),
+                                  A.Normalize(mean=mean, std=std,always_apply=True),
+                                  ToTensorV2()
+                                ])
 
-    test_transform = A.Compose(
-        [
-        A.Normalize(norm_mean, norm_std, always_apply=True),
-        ToTensorV2()
-    ]
-    )
+    test_transform = A.Compose([A.Normalize(norm_mean, norm_std, always_apply=True), ToTensorV2()])
     
     return(train_transform,test_transform)
 
