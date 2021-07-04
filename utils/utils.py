@@ -124,26 +124,39 @@ def valid_accuracy_loss_plots(train_loss, train_acc, test_loss, test_acc):
     plt.rcParams["figure.figsize"] = (25,6)
 
     # Plot the learning curve.
-    fig, (ax1,ax2) = plt.subplots(1,2)
-    ax1.plot(np.array(train_loss), 'red', label="Training Loss")
-    ax1.plot(np.array(test_loss), 'blue', label="Validation Loss")
+    fig, ax = plt.subplots(2,2, figsize=(25,15))
+    
+    ax[0,0].plot(np.array(train_loss), 'red', label="Training Loss")
 
     # Label the plot.
-    ax1.set_title("Training & Validation Loss")
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("Loss")
-    ax1.set_ylim(0.3,1)
-    ax1.legend()
+    ax[0,0].set_title("Training Loss")
+    ax[0,0].set_xlabel("Epoch")
+    ax[0,0].set_ylabel("Loss")
+    ax[0,0].set_ylim(0, 2)
 
-    ax2.plot(np.array(train_acc), 'red', label="Training Accuracy")
-    ax2.plot(np.array(test_acc), 'blue', label="Validation Accuracy")
+    ax[0,1].plot(np.array(test_loss), 'blue', label="Test Loss")
 
     # Label the plot.
-    ax2.set_title("Training & Validation Accuracy")
-    ax2.set_xlabel("Epoch")
-    ax2.set_ylabel("Loss")
-    ax2.set_ylim(30,90)
-    ax2.legend()
+    ax[0,1].set_title("Test Loss")
+    ax[0,1].set_xlabel("Epoch")
+    ax[0,1].set_ylabel("Loss")
+    ax[0,1].set_ylim(0, 0.015)
+
+    ax[1,0].plot(np.array(train_acc), 'red', label="Training Accuracy")
+
+    # Label the plot.
+    ax[1,0].set_title("Training Accuracy")
+    ax[1,0].set_xlabel("Epoch")
+    ax[1,0].set_ylabel("Loss")
+    ax[1,0].set_ylim(20,92)
+
+    ax[1,1].plot(np.array(test_acc), 'blue', label="Test Accuracy")
+
+    # Label the plot.
+    ax[1,1].set_title("Test Accuracy")
+    ax[1,1].set_xlabel("Epoch")
+    ax[1,1].set_ylabel("Loss")
+    ax[1,1].set_ylim(30,92)
 
     plt.show()
 
@@ -155,15 +168,15 @@ def seed_everything(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-def wrong_predictions(self,model,test_loader):
+def wrong_predictions(model,test_loader, norm_mean, norm_std, classes):
     wrong_images=[]
     wrong_label=[]
     correct_label=[]
     model.eval()
     with torch.no_grad():
         for data, target in test_loader:
-            data, target = data.to(self.device), target.to(self.device)
-            output = model(data)        
+            data, target = data.to(device), target.to(device)
+            output = model(data)
             pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
 
             wrong_pred = (pred.eq(target.view_as(pred)) == False)
@@ -171,27 +184,26 @@ def wrong_predictions(self,model,test_loader):
             wrong_label.append(pred[wrong_pred])
             correct_label.append(target.view_as(pred)[wrong_pred])  
 
-            wrong_predictions = list(zip(torch.cat(wrong_images),torch.cat(wrong_label),torch.cat(correct_label)))    
+            wrong_predictions = list(zip(torch.cat(wrong_images),torch.cat(wrong_label),torch.cat(correct_label)))
         print(f'Total wrong predictions are {len(wrong_predictions)}')
 
-        self.plot_misclassified(wrong_predictions)
+        plot_misclassified(wrong_predictions, norm_mean, norm_std, classes)
 
     return wrong_predictions
-
-def plot_misclassified(self,wrong_predictions):
+    
+def plot_misclassified(wrong_predictions, norm_mean, norm_std, classes):
     fig = plt.figure(figsize=(10,12))
     fig.tight_layout()
-    mean,std = self.cifar_dataset.calculate_mean_std()
-    #mean,std = helper.calculate_mean_std("CIFAR10")
     for i, (img, pred, correct) in enumerate(wrong_predictions[:20]):
         img, pred, target = img.cpu().numpy().astype(dtype=np.float32), pred.cpu(), correct.cpu()
         for j in range(img.shape[0]):
-            img[j] = (img[j]*std[j])+mean[j]
+            img[j] = (img[j]*norm_std[j])+norm_mean[j]
 
         img = np.transpose(img, (1, 2, 0)) #/ 2 + 0.5
         ax = fig.add_subplot(5, 5, i+1)
         ax.axis('off')
-        ax.set_title(f'\nactual : {self.class_names[target.item()]}\npredicted : {self.class_names[pred.item()]}',fontsize=10)  
-        ax.imshow(img)  
+        ax.set_title(f'\nactual : {classes[target.item()]}\npredicted : {classes[pred.item()]}',fontsize=10)
+        ax.imshow(img)
 
     plt.show()
+    

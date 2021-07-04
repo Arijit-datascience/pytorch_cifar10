@@ -24,7 +24,6 @@ def train(model, device, train_loader, optimizer, epoch, l1_factor):
         epoch_loss += loss.item()
         loss.backward()
         optimizer.step()
-        #scheduler.step()
         pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
         correct += pred.eq(target.view_as(pred)).sum().item()
 
@@ -37,9 +36,6 @@ def test(model, device, test_loader):
     model.eval()
     test_loss = 0
     correct = 0
-    test_pred = torch.LongTensor()
-    target_pred = torch.LongTensor()
-    target_data = torch.LongTensor()
 
     with torch.no_grad():
         for data, target in test_loader:
@@ -49,15 +45,11 @@ def test(model, device, test_loader):
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             pred_cpu = output.cpu().data.max(dim=1, keepdim=True)[1]
             correct += pred.eq(target.view_as(pred)).sum().item()
-            test_pred = torch.cat((test_pred, pred_cpu), dim=0)
-            target_pred = torch.cat((target_pred, target.cpu()), dim=0)
-            target_data = torch.cat((target_data, data.cpu()), dim=0)
-
 
     test_loss /= len(test_loader.dataset)
     test_acc = 100.*correct/len(test_loader.dataset)
     print(f'\nTest set: Average loss: {test_loss:.3f}, Accuracy: {100. * correct/len(test_loader.dataset):.2f}')
-    return test_loss, test_acc, test_pred, target_pred, target_data
+    return test_loss, test_acc
 
 def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, l1_factor):
   train_loss_values = []
@@ -69,7 +61,7 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
       print('\nEpoch {} : '.format(epoch))
       # train the model
       train_loss, train_acc = train(model, device, train_loader, optimizer, epoch, l1_factor)
-      test_loss, test_acc, test_pred, target_pred, target_data = test(model, device, test_loader)
+      test_loss, test_acc = test(model, device, test_loader)
       scheduler.step(test_acc)
       
       train_loss_values.append(train_loss)
@@ -78,5 +70,5 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
       train_acc_values.append(train_acc)
       test_acc_values.append(test_acc)
 
-  return train_loss_values, test_loss_values, train_acc_values, test_acc_values, test_pred, target_pred, target_data
+  return train_loss_values, test_loss_values, train_acc_values, test_acc_values
   
