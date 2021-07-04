@@ -70,7 +70,7 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
       # train the model
       train_loss, train_acc = train(model, device, train_loader, optimizer, epoch, l1_factor)
       test_loss, test_acc, test_pred, target_pred, target_data = test(model, device, test_loader)
-      scheduler.step(test_loss)
+      scheduler.step(test_acc[-1])
       
       train_loss_values.append(train_loss)
       test_loss_values.append(test_loss)
