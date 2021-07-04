@@ -25,7 +25,7 @@ def train(model, device, train_loader, optimizer, scheduler, epoch, l1_factor):
         epoch_loss += loss.item()
         loss.backward()
         optimizer.step()
-        scheduler.step()
+        #scheduler.step()
         pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
         correct += pred.eq(target.view_as(pred)).sum().item()
 
