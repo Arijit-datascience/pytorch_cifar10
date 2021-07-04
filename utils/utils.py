@@ -147,28 +147,6 @@ def valid_accuracy_loss_plots(train_loss, train_acc, test_loss, test_acc):
 
     plt.show()
 
-def misclassification(predictions, targets, data):
-    pred = predictions.view(-1)
-    target = targets.view(-1)
-
-    index = 0
-    misclassified_image = []
-
-    for label, predict in zip(target, pred):
-        if label != predict:
-            misclassified_image.append(index)
-        index += 1
-
-    plt.figure(figsize=(10,5))
-    plt.suptitle('Misclassified Images');
-
-    for plot_index, bad_index in enumerate(misclassified_image[0:10]):
-        p = plt.subplot(2, 5, plot_index+1)
-        img = data.squeeze().permute(1,2,0)
-        p.imshow(img[bad_index].reshape(3,32,32))
-        p.axis('off')
-        p.set_title(f'Pred:{pred[bad_index]}, Actual:{target[bad_index]}')
-
 def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
@@ -176,3 +154,44 @@ def seed_everything(seed):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
+
+def wrong_predictions(self,model,test_loader):
+    wrong_images=[]
+    wrong_label=[]
+    correct_label=[]
+    model.eval()
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(self.device), target.to(self.device)
+            output = model(data)        
+            pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
+
+            wrong_pred = (pred.eq(target.view_as(pred)) == False)
+            wrong_images.append(data[wrong_pred])
+            wrong_label.append(pred[wrong_pred])
+            correct_label.append(target.view_as(pred)[wrong_pred])  
+
+            wrong_predictions = list(zip(torch.cat(wrong_images),torch.cat(wrong_label),torch.cat(correct_label)))    
+        print(f'Total wrong predictions are {len(wrong_predictions)}')
+
+        self.plot_misclassified(wrong_predictions)
+
+    return wrong_predictions
+
+def plot_misclassified(self,wrong_predictions):
+    fig = plt.figure(figsize=(10,12))
+    fig.tight_layout()
+    mean,std = self.cifar_dataset.calculate_mean_std()
+    #mean,std = helper.calculate_mean_std("CIFAR10")
+    for i, (img, pred, correct) in enumerate(wrong_predictions[:20]):
+        img, pred, target = img.cpu().numpy().astype(dtype=np.float32), pred.cpu(), correct.cpu()
+        for j in range(img.shape[0]):
+            img[j] = (img[j]*std[j])+mean[j]
+
+        img = np.transpose(img, (1, 2, 0)) #/ 2 + 0.5
+        ax = fig.add_subplot(5, 5, i+1)
+        ax.axis('off')
+        ax.set_title(f'\nactual : {self.class_names[target.item()]}\npredicted : {self.class_names[pred.item()]}',fontsize=10)  
+        ax.imshow(img)  
+
+    plt.show()
