@@ -46,7 +46,7 @@ def get_transforms(norm_mean,norm_std):
                                   A.Rotate(limit=5),
                                   A.CoarseDropout(max_holes=1,min_holes = 1, max_height=16, max_width=16, p=0.5,fill_value=tuple([x * 255.0 for x in norm_mean]),
                                   min_height=16, min_width=16),
-                                  A.Normalize(mean=norm_mean, std=std,always_apply=True),
+                                  A.Normalize(mean=norm_mean, std=norm_std,always_apply=True),
                                   ToTensorV2()
                                 ])
 
