@@ -1,2 +1,3 @@
-# pytorch-cifar10-resnet
-CIFAR10 image recognition using ResNet architecture
+# Object Detection on CIFAR10 dataset using Pytorch
+
+
