@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-def train(model, device, train_loader, optimizer, scheduler, epoch, l1_factor):
+def train(model, device, train_loader, optimizer, epoch, l1_factor):
     model.train()
     epoch_loss = 0
     correct = 0
@@ -71,7 +71,8 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
       # train the model
       train_loss, train_acc = train(model, device, train_loader, optimizer, scheduler, epoch, l1_factor)
       test_loss, test_acc, test_pred, target_pred, target_data = test(model, device, test_loader)
-
+      scheduler.step(test_loss)
+      
       train_loss_values.append(train_loss)
       test_loss_values.append(test_loss)
 
