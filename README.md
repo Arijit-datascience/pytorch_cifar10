@@ -2,5 +2,5 @@
 
 # Important files
 
-* [Model file] (/model/resnet.py)
+* [Model file](/model/resnet.py)
 
