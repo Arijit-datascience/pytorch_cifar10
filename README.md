@@ -2,5 +2,5 @@
 
 # Important files
 
-Model file [https://github.com/Arijit-datascience/pytorch_cifar10/blob/main/model/resnet.py]
+* [Model file] (/model/resnet.py)
 
