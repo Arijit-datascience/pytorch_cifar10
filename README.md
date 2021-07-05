@@ -3,20 +3,22 @@
 ## Modelling Techniques
 
   1. Model: ResNet18
-  2. Total Parameters: 11,173,962
-  3. Test Accuracy: 90.03%
-  4. Epochs: Run till 40 epochs
-  5. Normalization: Layer Normalization
-  6. Regularization: L2 with factor 0.0001
-  7. Optimizer: Adam with learning rate 0.001
-  8. Loss criterion: Cross Entropy
-  9. Scheduler: ReduceLROnPlateau
-  10. Albumentations: 
+  2. Total Train data: 60,000 | Total Test Data: 10,000
+  3. Total Parameters: 11,173,962
+  4. Test Accuracy: 90.03%
+  5. Epochs: Run till 40 epochs
+  6. Normalization: Layer Normalization
+  7. Regularization: L2 with factor 0.0001
+  8. Optimizer: Adam with learning rate 0.001
+  9. Loss criterion: Cross Entropy
+  10. Scheduler: ReduceLROnPlateau
+  11. Albumentations: 
       1. RandomCrop(32, padding=4)
       2. CutOut(16x16)
       3. Rotate(5 degree)
       4. CoarseDropout
       5. Normalization 
+   12. Misclassified Images: 997 images were misclassified out of 10,000
 
 ## Code Structure
 
