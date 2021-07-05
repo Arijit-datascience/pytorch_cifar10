@@ -26,15 +26,16 @@
 6. Plotting 20 Misclassification Images
 7. Plotting the Gradcam for same 20 misclassified images
 
-##   
+## Plots
 
-![image](https://user-images.githubusercontent.com/65554220/124408182-4be91780-dd63-11eb-9c6a-85d552590731.png)
+1. Train & Test Loss, Train & Test Accuracy  
+![image](https://user-images.githubusercontent.com/65554220/124408182-4be91780-dd63-11eb-9c6a-85d552590731.png)  
 
+2. Misclassified Images  
+![image](https://user-images.githubusercontent.com/65554220/124408305-8a7ed200-dd63-11eb-9791-29ebc99a2e7a.png)  
 
-![image](https://user-images.githubusercontent.com/65554220/124408305-8a7ed200-dd63-11eb-9791-29ebc99a2e7a.png)
-
-
-![image](https://user-images.githubusercontent.com/65554220/124408315-95396700-dd63-11eb-8df7-2b5a801d687a.png)
+3. Gradcam Images  
+![image](https://user-images.githubusercontent.com/65554220/124408315-95396700-dd63-11eb-8df7-2b5a801d687a.png)  
 
 
 
