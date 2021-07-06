@@ -3,6 +3,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+EPOCH = 40
+batch_size = 256
+l1_factor = 0
+l2_factor = 0.0001
+lr_value = 0.001
+mt_val = 0.9
+
+
 def train(model, device, train_loader, optimizer, epoch, l1_factor):
     model.train()
     epoch_loss = 0
