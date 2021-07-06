@@ -41,10 +41,7 @@ def cifar10_mean_std():
 def get_transforms(norm_mean,norm_std):
     """get the train and test transform"""
     print(norm_mean,norm_std)
-    train_transform = A.Compose([#A.PadIfNeeded(min_height=40, min_width=40, always_apply=True),
-                                 #A.RandomCrop(width=32, height=32,p=1),
-                                 [
-                                    A.Sequential([
+    train_transform = A.Compose([A.Sequential([
                                         A.PadIfNeeded(
                                             min_height=40,
                                             min_width=40,
