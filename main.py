@@ -10,6 +10,9 @@ l2_factor = 0.0001
 lr_value = 0.001
 mt_val = 0.9
 
+optimizer = optim.Adam(model.parameters(), lr=lr_value, weight_decay=l2_factor)
+scheduler = ReduceLROnPlateau(optimizer, factor=0.2, patience=3,verbose=True,mode='max')
+
 
 def train(model, device, train_loader, optimizer, epoch, l1_factor):
     model.train()
