@@ -41,7 +41,8 @@ def cifar10_mean_std():
 def get_transforms(norm_mean,norm_std):
     """get the train and test transform"""
     print(norm_mean,norm_std)
-    train_transform = A.Compose([A.Sequential([
+    train_transform = A.Compose([
+                                A.Sequential([
                                         A.PadIfNeeded(
                                             min_height=40,
                                             min_width=40,
@@ -57,7 +58,8 @@ def get_transforms(norm_mean,norm_std):
                                   A.Rotate(limit=5),
                                   A.Normalize(mean=norm_mean, std=norm_std,always_apply=True),
                                   ToTensorV2()
-                               ])
+                               ]
+                               )
 
     test_transform = A.Compose([A.Normalize(norm_mean, norm_std, always_apply=True), ToTensorV2()])
     
