@@ -57,7 +57,7 @@ def get_transforms(norm_mean,norm_std):
                                   A.Rotate(limit=5),
                                   A.Normalize(mean=norm_mean, std=norm_std,always_apply=True),
                                   ToTensorV2()
-                                ])
+                               ])
 
     test_transform = A.Compose([A.Normalize(norm_mean, norm_std, always_apply=True), ToTensorV2()])
     
