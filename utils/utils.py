@@ -185,7 +185,7 @@ def seed_everything(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-def wrong_predictions(model,test_loader, norm_mean, norm_std, classes):
+def wrong_predictions(model,test_loader, norm_mean, norm_std, classes, device):
     wrong_images=[]
     wrong_label=[]
     correct_label=[]
