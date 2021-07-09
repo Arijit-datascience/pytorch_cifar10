@@ -42,13 +42,14 @@ class ResNet(nn.Module):
         #Prep Layer
         self.prep = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1, bias=False)
-            nn.BatchNorm2d(64)
+            nn.BatchNorm2d(64),
             nn.ReLU()
         )
         
         #Layer1
         self.conv2 = nn.Sequential(
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=(3, 3), stride=1, padding=1, bias=False),
+            nn.MaxPool2d(2, 2),
             nn.BatchNorm2d(128),
             nn.ReLU()   
         )
@@ -67,8 +68,8 @@ class ResNet(nn.Module):
         
         #Layer2
         self.conv5 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=(3, 3), padding=1, bias=False),
-            nn.MaxPool2d(2, 2) 
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=(3, 3), bias=False),
+            nn.MaxPool2d(2, 2), 
             nn.BatchNorm2d(256),
             nn.ReLU()
         )
@@ -76,25 +77,26 @@ class ResNet(nn.Module):
         #Layer3
         self.conv6 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(3, 3), padding=1, bias=False),
-            nn.MaxPool2d(2, 2) 
+            nn.MaxPool2d(2, 2),
             nn.BatchNorm2d(32),
             nn.ReLU()
         )
         
-        self.conv6 = nn.Sequential(
+        self.conv7 = nn.Sequential(
             nn.Conv2d(in_channels=256, out_channels=512, kernel_size=(3, 3), padding=1, bias=False),
             nn.BatchNorm2d(512),
             nn.ReLU()
         )
         
-        self.conv7 = nn.Sequential(
+        self.conv8 = nn.Sequential(
             nn.Conv2d(in_channels=512, out_channels=512, kernel_size=(3, 3), padding=1, bias=False),
             nn.BatchNorm2d(512),
             nn.ReLU()
         )
         
         self.max = nn.Sequential(
-            nn.MaxPool2d(kernel_size=4) )
+            nn.MaxPool2d(kernel_size=4, 2)
+        )
         
         self.linear = nn.Linear(512*block.expansion, num_classes)
 
@@ -107,12 +109,22 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = F.avg_pool2d(out, 8)
+        out = self.prep(x)
+        #Layer1
+        X = self.conv2(out)
+        R1 = self.conv3(X)
+        R1 = self.conv4(R1)
+        R1 = R1 + X
+        out = X + R1
+        #Layer2
+        out = self.conv5(out)
+        #Layer3
+        X2 = self.conv6(out)
+        R2 = self.conv7(X2)
+        R2 = self.conv8(R2)
+        R2 = R2 + X2
+        out = X2 + R2
+        out = self.max(out)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
