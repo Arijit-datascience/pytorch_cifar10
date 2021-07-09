@@ -60,7 +60,7 @@ class ResNet(nn.Module):
             nn.ReLU()
         )
         
-        self.conv4 = nn.sequential(
+        self.conv4 = nn.Sequential(
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3, 3), padding=1, bias=False),
             nn.BatchNorm2d(128),
             nn.ReLU()
