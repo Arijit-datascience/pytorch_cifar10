@@ -96,5 +96,4 @@ class ResNet(nn.Module):
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         #return F.log_softmax(out, dim=-1)
-        #return F.softmax(out, dim=-1)
-        return out
+        return F.softmax(out, dim=-1)
