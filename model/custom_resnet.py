@@ -76,14 +76,14 @@ class ResNet(nn.Module):
         
         #Layer3
         self.conv6 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(3, 3), padding=1, bias=False),
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=(3, 3), padding=1, bias=False),
             nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(32),
+            nn.BatchNorm2d(512),
             nn.ReLU()
         )
         
         self.conv7 = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=(3, 3), padding=1, bias=False),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=(3, 3), padding=1, bias=False),
             nn.BatchNorm2d(512),
             nn.ReLU()
         )
