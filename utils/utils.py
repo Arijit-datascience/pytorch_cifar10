@@ -145,6 +145,27 @@ def get_dataloaders(train_set,test_set):
     test_loader  = torch.utils.data.DataLoader(test_set, **dataloader_args)
     return(train_loader,test_loader)
 
+def get_dataloaders_onecycle(train_set,test_set):
+
+    SEED = 1
+    # CUDA?
+    cuda = torch.cuda.is_available()
+    print("CUDA Available?", cuda)
+
+    # For reproducibility
+    torch.manual_seed(SEED)
+    if cuda:
+        torch.cuda.manual_seed(SEED)
+
+    # dataloader arguments
+    dataloader_args = dict(shuffle=True, batch_size=512, num_workers=2, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64, num_workers=1)
+
+    # dataloaders
+    train_loader = torch.utils.data.DataLoader(train_set, **dataloader_args)
+
+    test_loader  = torch.utils.data.DataLoader(test_set, **dataloader_args)
+    return(train_loader,test_loader)
+
 def show_sample_images(data_loader, classes, mean=.5, std=.5, num_of_images = 10, is_norm = True):
     """ Display images from a given batch of images """
     smpl = iter(data_loader)
