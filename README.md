@@ -7,6 +7,7 @@ This repo is the internal engine for our Object detection projects on CIFAR10 us
 Here you can find code structure for all the models that we have used. Following is the list, for now:
 
 * [Resnet18](/model/resnet.py)
+* [custom_resnet](/model/custom_resnet.py)
 
 ## [utils](/utils)
 
@@ -41,5 +42,3 @@ This repo is constantly being updated based on all the new and intersting Comput
 Abhiram Gurijala  
 Arijit Ganguly  
 Rohin Sequeira  
-
-
