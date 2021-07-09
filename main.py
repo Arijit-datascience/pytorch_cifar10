@@ -41,7 +41,8 @@ def cycle_lr(model,train_loader,clr,optimizer):
         input, target = input.cuda(), target.cuda() 
         var_ip, var_tg = Variable(input), Variable(target)
         output = model(var_ip)
-        loss = F.nll_loss(output, var_tg)
+        #loss = F.nll_loss(output, var_tg)
+        loss = nn.CrossEntropyLoss()(output, var_tg)
     
         running_loss = avg_beta * running_loss + (1-avg_beta) *loss.item()
         smoothed_loss = running_loss / (1 - avg_beta**(i+1))
@@ -75,7 +76,8 @@ def train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_
 
         optimizer.zero_grad()
         output = model(var_ip)
-        loss = F.nll_loss(output, var_tg)
+        #loss = F.nll_loss(output, var_tg)
+        loss = nn.CrossEntropyLoss()(output, var_tg)
         
         reg_loss = 0 
         if l1_factor > 0:
@@ -122,7 +124,8 @@ def test_one_cycle(model, device, test_loader):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += F.nll_loss(output, target).item()  # sum up batch loss
+            #test_loss += F.nll_loss(output, target).item()  # sum up batch loss
+            test_loss += nn.CrossEntropyLoss()(output, target).item()
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             pred_cpu = output.cpu().data.max(dim=1, keepdim=True)[1]
             correct += pred.eq(target.view_as(pred)).sum().item()
