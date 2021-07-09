@@ -162,8 +162,8 @@ def main_onecycle(EPOCH, model, device, train_loader, test_loader, optimizer, on
     for epoch in range(1, EPOCH + 1):
         print('\nEpoch {} : '.format(epoch))
         # train the model
-        train_loss, train_acc = train.train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_factor)
-        test_loss, test_acc = test.test_one_cycle(model, device, test_loader)
+        train_loss, train_acc = train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_factor)
+        test_loss, test_acc = test_one_cycle(model, device, test_loader)
 
         train_loss_values.append(train_loss)
         test_loss_values.append(test_loss)
