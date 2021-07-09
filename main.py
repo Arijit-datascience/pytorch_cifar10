@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 def train(model, device, train_loader, optimizer, epoch, l1_factor):
     model.train()
