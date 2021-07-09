@@ -55,8 +55,10 @@ def get_transforms(norm_mean,norm_std):
                 width=32
             )
         ], p=0.5),
-        A.Cutout(num_holes=1, max_h_size=16, max_w_size=16, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
-        A.Rotate(limit=5),
+        A.HorizontalFlip(p=0.5),
+        #A.Cutout(num_holes=1, max_h_size=16, max_w_size=16, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
+        A.Cutout(num_holes=1, max_h_size=8, max_w_size=8, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=0.5),
+        #A.Rotate(limit=5),
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
