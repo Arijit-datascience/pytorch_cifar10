@@ -92,7 +92,7 @@ class ResNet(nn.Module):
         R2 = self.conv8(R2)
         R2 = R2 + X2
         out = X2 + R2
-        out = self.max(out)
-        out = out.view(out.size(0), -1)
-        out = self.linear(out)
+        #out = self.max(out)
+        #out = out.view(out.size(0), -1)
+        #out = self.linear(out)
         return F.log_softmax(out, dim=-1)
