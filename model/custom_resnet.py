@@ -95,7 +95,7 @@ class ResNet(nn.Module):
         )
         
         self.max = nn.Sequential(
-            nn.MaxPool2d(kernel_size=4, 2)
+            nn.MaxPool2d(4, 2)
         )
         
         self.linear = nn.Linear(512*block.expansion, num_classes)
