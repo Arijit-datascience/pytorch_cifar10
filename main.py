@@ -39,10 +39,10 @@ def cycle_lr(model,train_loader,clr,optimizer):
     model.train()
     for i, (input, target) in enumerate(train_loader):
         input, target = input.cuda(), target.cuda() 
-        var_ip, var_tg = Variable(input), Variable(target)
-        output = model(var_ip)
+        #var_ip, var_tg = Variable(input), Variable(target)
+        output = model(input)
         #loss = F.nll_loss(output, var_tg)
-        loss = nn.CrossEntropyLoss()(output, var_tg)
+        loss = nn.CrossEntropyLoss()(output, target)
     
         running_loss = avg_beta * running_loss + (1-avg_beta) *loss.item()
         smoothed_loss = running_loss / (1 - avg_beta**(i+1))
@@ -63,21 +63,20 @@ def cycle_lr(model,train_loader,clr,optimizer):
 def train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_factor):
     model.train()
     correct = 0
-    processed = 0
     epoch_loss = 0
         
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
-        var_ip, var_tg = Variable(data), Variable(target)
+        #var_ip, var_tg = Variable(data), Variable(target)
                 
         lr, mom = onecycle.calc()
         for g in optimizer.param_groups:
             g['lr'] = lr
 
         optimizer.zero_grad()
-        output = model(var_ip)
+        output = model(data)
         #loss = F.nll_loss(output, var_tg)
-        loss = nn.CrossEntropyLoss()(output, var_tg)
+        loss = nn.CrossEntropyLoss()(output, target)
         
         reg_loss = 0 
         if l1_factor > 0:
