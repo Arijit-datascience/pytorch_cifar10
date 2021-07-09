@@ -36,7 +36,7 @@ class ResNet(nn.Module):
         
         #Layer2
         self.conv5 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=(3, 3), bias=False),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=(3, 3), padding=1, bias=False),
             nn.MaxPool2d(2, 2), 
             nn.BatchNorm2d(256),
             nn.ReLU()
@@ -63,7 +63,7 @@ class ResNet(nn.Module):
         )
         
         self.max = nn.Sequential(
-            nn.MaxPool2d(4, 2)
+            nn.MaxPool2d(4, 4)
         )
         
         self.linear = nn.Linear(512*1, num_classes)
