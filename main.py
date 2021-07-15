@@ -4,7 +4,40 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-def train(model, device, train_loader, optimizer, epoch, l1_factor):
+def train(model, device, train_loader, optimizer, epoch, l1_factor, scheduler):
+    model.train()
+    epoch_loss = 0
+    correct = 0
+
+    for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = nn.CrossEntropyLoss()(output, target)
+        
+        reg_loss = 0 
+        if l1_factor > 0:
+            for p in model.parameter():
+                reg_loss = reg_loss + p.abs().sum()
+
+        loss += l1_factor * reg_loss
+
+        epoch_loss += loss.item()
+        loss.backward()
+        optimizer.step()
+        
+        if scheduler:
+            scheduler.step()
+            
+        pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+        correct += pred.eq(target.view_as(pred)).sum().item()
+
+    print(f'Train set: Average loss: {loss.item():.4f}, Accuracy: {100. * correct/len(train_loader.dataset):.2f}')
+    train_loss = epoch_loss / len(train_loader)
+    train_acc=100.*correct/len(train_loader.dataset)
+    return train_loss, train_acc
+
+def train_old(model, device, train_loader, optimizer, epoch, l1_factor):
     model.train()
     epoch_loss = 0
     correct = 0
@@ -88,9 +121,9 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
   for epoch in range(1, EPOCH + 1):
       print('\nEpoch {} : '.format(epoch))
       # train the model
-      train_loss, train_acc = train(model, device, train_loader, optimizer, epoch, l1_factor)
+      train_loss, train_acc = train(model, device, train_loader, optimizer, epoch, l1_factor, scheduler)
       test_loss, test_acc = test(model, device, test_loader)
-      scheduler.step(test_acc)
+      #scheduler.step(test_acc)
       
       train_loss_values.append(train_loss)
       test_loss_values.append(test_loss)
