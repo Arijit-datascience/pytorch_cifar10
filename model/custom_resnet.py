@@ -82,7 +82,7 @@ class ResNet(nn.Module):
         X = self.conv2(out)
         R1 = self.conv3(X)
         R1 = self.conv4(R1)
-        #R1 = R1 + X
+        R1 = R1 + X
         out = X + R1
         #Layer2
         out = self.conv5(out)
@@ -90,7 +90,7 @@ class ResNet(nn.Module):
         X2 = self.conv6(out)
         R2 = self.conv7(X2)
         R2 = self.conv8(R2)
-        #R2 = R2 + X2
+        R2 = R2 + X2
         out = X2 + R2
         out = self.max(out)
         out = out.view(out.size(0), -1)
