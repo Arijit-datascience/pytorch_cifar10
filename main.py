@@ -60,41 +60,6 @@ def cycle_lr(model,train_loader,clr,optimizer):
     
     return clr
 
-def train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_factor):
-    model.train()
-    correct = 0
-    epoch_loss = 0
-        
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        #var_ip, var_tg = Variable(data), Variable(target)
-                
-        lr, mom = onecycle.calc()
-        for g in optimizer.param_groups:
-            g['lr'] = lr
-
-        optimizer.zero_grad()
-        output = model(data)
-        #loss = F.nll_loss(output, var_tg)
-        loss = nn.CrossEntropyLoss()(output, target)
-        
-        reg_loss = 0 
-        if l1_factor > 0:
-            for p in model.parameter():
-                reg_loss = reg_loss + p.abs().sum()
-
-        loss += l1_factor * reg_loss
-        epoch_loss += loss.item()
-        loss.backward()
-        optimizer.step()
-        pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-        correct += pred.eq(target.view_as(pred)).sum().item()
-
-    print(f'Train set: Average loss: {loss.item():.4f}, Accuracy: {100. * correct/len(train_loader.dataset):.2f}')
-    train_loss = epoch_loss / len(train_loader)
-    train_acc=100.*correct/len(train_loader.dataset)
-    return train_loss, train_acc
-
 def test(model, device, test_loader):    
     model.eval()
     test_loss = 0
@@ -105,26 +70,6 @@ def test(model, device, test_loader):
             data, target = data.to(device), target.to(device)
             output = model(data)
             test_loss += nn.CrossEntropyLoss()(output, target).item()  # sum up batch loss
-            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            pred_cpu = output.cpu().data.max(dim=1, keepdim=True)[1]
-            correct += pred.eq(target.view_as(pred)).sum().item()
-
-    test_loss /= len(test_loader.dataset)
-    test_acc = 100.*correct/len(test_loader.dataset)
-    print(f'\nTest set: Average loss: {test_loss:.3f}, Accuracy: {100. * correct/len(test_loader.dataset):.2f}')
-    return test_loss, test_acc
-
-def test_one_cycle(model, device, test_loader):    
-    model.eval()
-    test_loss = 0
-    correct = 0
-
-    with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            #test_loss += F.nll_loss(output, target).item()  # sum up batch loss
-            test_loss += nn.CrossEntropyLoss()(output, target).item()
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             pred_cpu = output.cpu().data.max(dim=1, keepdim=True)[1]
             correct += pred.eq(target.view_as(pred)).sum().item()
@@ -154,23 +99,3 @@ def main(EPOCH, model, device, train_loader, test_loader, optimizer, scheduler, 
       test_acc_values.append(test_acc)
 
   return train_loss_values, test_loss_values, train_acc_values, test_acc_values
-
-def main_onecycle(EPOCH, model, device, train_loader, test_loader, optimizer, onecycle, l1_factor):
-    train_loss_values = []
-    train_acc_values = []
-    test_loss_values = []
-    test_acc_values = []
-
-    for epoch in range(1, EPOCH + 1):
-        print('\nEpoch {} : '.format(epoch))
-        # train the model
-        train_loss, train_acc = train_one_cycle(model, device, train_loader, optimizer, onecycle, epoch, l1_factor)
-        test_loss, test_acc = test_one_cycle(model, device, test_loader)
-
-        train_loss_values.append(train_loss)
-        test_loss_values.append(test_loss)
-
-        train_acc_values.append(train_acc)
-        test_acc_values.append(test_acc)
-        
-    return train_loss_values, test_loss_values, train_acc_values, test_acc_values
