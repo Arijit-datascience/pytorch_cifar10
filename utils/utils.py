@@ -89,16 +89,7 @@ def get_transforms_custom_resnet(norm_mean,norm_std):
             )
         ], p=1),
         A.HorizontalFlip(p=1),
-        A.CoarseDropout(
-                max_holes=3,
-                max_height=8,
-                max_width=8,
-                min_holes=1,
-                min_height=8,
-                min_width=8,
-                fill_value=tuple((x * 255.0 for x in norm_mean)),
-                p=0.8,
-            ),
+        A.Cutout(num_holes=4, max_h_size=16, max_w_size=16, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
