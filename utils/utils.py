@@ -89,7 +89,17 @@ def get_transforms_custom_resnet(norm_mean,norm_std):
             )
         ], p=1),
         A.HorizontalFlip(p=1),
-        A.Cutout(num_holes=2, max_h_size=8, max_w_size=8, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
+        #A.Cutout(num_holes=2, max_h_size=8, max_w_size=8, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=1),
+        A.CoarseDropout(
+                max_holes=3,
+                max_height=8,
+                max_width=8,
+                min_holes=1,
+                min_height=8,
+                min_width=8,
+                fill_value=tuple((x * 255.0 for x in mean)),
+                p=0.8,
+            ),
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
@@ -138,27 +148,6 @@ def get_dataloaders(train_set,test_set):
 
     # dataloader arguments
     dataloader_args = dict(shuffle=True,batch_size=512,num_workers=2, pin_memory=True) if cuda else dict(shuffle=True,batch_size=64,num_workers=1)
-
-    # dataloaders
-    train_loader = torch.utils.data.DataLoader(train_set, **dataloader_args)
-
-    test_loader  = torch.utils.data.DataLoader(test_set, **dataloader_args)
-    return(train_loader,test_loader)
-
-def get_dataloaders_onecycle(train_set,test_set):
-
-    SEED = 1
-    # CUDA?
-    cuda = torch.cuda.is_available()
-    print("CUDA Available?", cuda)
-
-    # For reproducibility
-    torch.manual_seed(SEED)
-    if cuda:
-        torch.cuda.manual_seed(SEED)
-
-    # dataloader arguments
-    dataloader_args = dict(shuffle=True, batch_size=512, num_workers=2, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64, num_workers=1)
 
     # dataloaders
     train_loader = torch.utils.data.DataLoader(train_set, **dataloader_args)
@@ -277,4 +266,3 @@ def plot_misclassified(wrong_predictions, norm_mean, norm_std, classes):
         ax.imshow(img)
 
     plt.show()
-    
