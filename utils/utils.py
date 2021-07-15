@@ -124,7 +124,7 @@ def get_datasets(train_transform,test_transform):
 
     return(train_set,test_set)
 
-def get_dataloaders(train_set,test_set, batch_size):
+def get_dataloaders(train_set,test_set, batch_size=128):
 
     SEED = 1
     # CUDA?
@@ -137,7 +137,7 @@ def get_dataloaders(train_set,test_set, batch_size):
         torch.cuda.manual_seed(SEED)
 
     # dataloader arguments
-    dataloader_args = dict(shuffle=True, batch_size=128, num_workers=2, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64, num_workers=1)
+    dataloader_args = dict(batch_size, shuffle=True, num_workers=2, pin_memory=True) if cuda else dict(batch_size, shuffle=True, num_workers=1)
 
     # dataloaders
     train_loader = torch.utils.data.DataLoader(train_set, **dataloader_args)
