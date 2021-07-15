@@ -97,7 +97,7 @@ def get_transforms_custom_resnet(norm_mean,norm_std):
                 min_holes=1,
                 min_height=8,
                 min_width=8,
-                fill_value=tuple((x * 255.0 for x in mean)),
+                fill_value=tuple((x * 255.0 for x in norm_mean)),
                 p=0.8,
             ),
         A.Normalize(norm_mean, norm_std),
