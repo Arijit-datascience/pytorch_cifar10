@@ -87,9 +87,18 @@ def get_transforms_custom_resnet(norm_mean,norm_std):
                 height=32,
                 width=32
             )
-        ], p=0.5),
-        A.HorizontalFlip(p=0.5),
-        A.Cutout(num_holes=1, max_h_size=8, max_w_size=8, fill_value=(norm_mean[0]*255, norm_mean[1]*255, norm_mean[2]*255), p=0.5),
+        ], p=1),
+        A.HorizontalFlip(p=1),
+        A.CoarseDropout(
+                max_holes=3,
+                max_height=8,
+                max_width=8,
+                min_holes=1,
+                min_height=8,
+                min_width=8,
+                fill_value=tuple((x * 255.0 for x in norm_mean)),
+                p=0.8,
+            ),
         A.Normalize(norm_mean, norm_std),
         ToTensorV2()
     ]
@@ -124,7 +133,7 @@ def get_datasets(train_transform,test_transform):
 
     return(train_set,test_set)
 
-def get_dataloaders(train_set,test_set):
+def get_dataloaders(train_set,test_set, batch_size):
 
     SEED = 1
     # CUDA?
@@ -137,7 +146,7 @@ def get_dataloaders(train_set,test_set):
         torch.cuda.manual_seed(SEED)
 
     # dataloader arguments
-    dataloader_args = dict(shuffle=True, batch_size=128, num_workers=2, pin_memory=True) if cuda else dict(shuffle=True, batch_size=64, num_workers=1)
+    dataloader_args = dict(shuffle=True, batch_size, num_workers=2, pin_memory=True) if cuda else dict(shuffle=True, batch_size, num_workers=1)
 
     # dataloaders
     train_loader = torch.utils.data.DataLoader(train_set, **dataloader_args)
