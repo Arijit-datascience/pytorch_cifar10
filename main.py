@@ -39,7 +39,7 @@ def train(model, device, train_loader, optimizer, epoch, l1_factor, scheduler):
     return train_loss, train_acc
 
 def test(model, device, test_loader):
-    #Function for training model
+    #Function for testing model
     model.eval()
     test_loss = 0
     correct = 0
