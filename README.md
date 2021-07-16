@@ -13,12 +13,14 @@ Here you can find code structure for all the models that we have used. Following
 
 Home for code related to processing and augmentation of images. Current residents:
 
-* [gradcam.py](/utils/gradcam.py)
+* [gradcam.py](/utils/gradcam.py)  
+  
   Gradcam code to _visually understand_ parts of the image that our model is focusing on.  
   
   _Reference:_ [Kazuto Nakashima](https://github.com/kazuto1011/grad-cam-pytorch/blob/fd10ff7fc85ae064938531235a5dd3889ca46fed/grad_cam.py)
 
-* [utils.py](/utils/utils.py)
+* [utils.py](/utils/utils.py)  
+
   Contains following processes:  
   * Mean and Standard Deviation calculation
   * Image Transformation
@@ -28,6 +30,10 @@ Home for code related to processing and augmentation of images. Current resident
   * Plot loss and accuracy graphs
   * Seeding
   * Display images that were misclassified
+
+* [lr_finder.py](/utils/lr_finder.py)  
+
+  Calculate the best _max_lr_ parameter for _OneCycleLR_.
   
 ## [main.py](/main.py)
   
