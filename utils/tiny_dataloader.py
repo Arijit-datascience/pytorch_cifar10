@@ -17,8 +17,6 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from sklearn.model_selection import train_test_split
 
-dataset_path = '/content/drive/MyDrive/data/tiny-imagenet-200/'
-
 # Giving each folder a ID
 def get_id_dictionary(path):
     """This Function will genrate Id's for all classes
@@ -145,10 +143,6 @@ def get_transforms(mean,std):
     test_transform = A.Compose([A.Normalize(mean, std),ToTensorV2()])
     
     return(train_transform,test_transform)
-
-def train_test_data():
-    X_train, X_test, y_train, y_test = get_data(dataset_path)
-    return X_train, X_test, y_train, y_test
 
 def get_dataloaders(X_train, X_test, y_train, y_test):
     
