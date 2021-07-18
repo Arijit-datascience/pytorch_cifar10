@@ -17,9 +17,6 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from sklearn.model_selection import train_test_split
 
-from google.colab import drive
-drive.mount('/content/drive')
-
 # Giving each folder a ID
 def get_id_dictionary(path):
     """This Function will genrate Id's for all classes
