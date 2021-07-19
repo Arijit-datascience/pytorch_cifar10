@@ -148,7 +148,7 @@ def get_transforms(mean,std):
     
     return(train_transform,test_transform)
 
-def get_dataloaders(X_train, X_test, y_train, y_test):
+def get_dataloaders(X_train, X_test, y_train, y_test, train_transform, test_transform):
     
     SEED = 1
     # CUDA?
