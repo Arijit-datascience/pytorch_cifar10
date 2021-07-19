@@ -109,6 +109,10 @@ class ImagenetDataset(Dataset):
             result[value] = (key, all_classes[key])      
         return result
 
+def calculate_mean_std():
+    mean,std = (0.4802, 0.4481, 0.3975), (0.2302, 0.2265, 0.2262)
+    return mean, std
+
 def get_mean_std(loader):
     """Calculate mean and standard deviation of the dataset
     Args:
