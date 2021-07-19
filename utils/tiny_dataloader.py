@@ -50,10 +50,10 @@ def get_data(path):
         train_labels += [value for i in range(500)]
     
     X_train, X_test, y_train, y_test = train_test_split(train_data, train_labels, test_size=0.3, random_state=42)
-    print('finished loading data, in {} seconds'.format(time.time() - t))
-    print('Samples for training: {}'.format(len(X_train)))
-    print('Samples for testing: {}'.format(len(X_test)))
-
+    print('Training samples: {}'.format(len(X_train)))
+    print('Testing samples: {}'.format(len(X_test)))
+    print('Data loading completed, in {} seconds'.format(time.time() - t))
+    
     return X_train, X_test, y_train, y_test
 
 class ImagenetDataset(Dataset):
@@ -127,8 +127,8 @@ def get_mean_std(loader):
     std = (channel_squared_sum/num_batches - mean**2)**0.5
     print("The mean of dataset : ", mean)
     print("The std of dataset : ", std)
-    return(tuple(map(lambda x: np.round(x,3), mean)), tuple(map(lambda x: np.round(x,3), std)))
-
+    return mean,std
+    
 def get_transforms(mean,std):
     train_transform = A.Compose([
       A.PadIfNeeded(min_height=76, min_width=76, always_apply=True),
@@ -146,7 +146,6 @@ def get_transforms(mean,std):
 
 def get_dataloaders(X_train, X_test, y_train, y_test):
     
-    X_train, X_test, y_train, y_test = train_test_data()
     SEED = 1
     # CUDA?
     cuda = torch.cuda.is_available()
